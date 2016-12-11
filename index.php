@@ -1,6 +1,6 @@
 <?php
 
-const P_H = 0.5;
+const P_H = 0.3;
 
 function factorial($Fact)
 {
@@ -11,7 +11,7 @@ function factorial($Fact)
 function calc_matrix($N, $AS)
 {
     $m = 3;
-    $P = 170;
+    $P = 100;
     $h = P_H;
 
 
@@ -58,9 +58,8 @@ function calc_matrix($N, $AS)
     {
         for ($j = 0; $j < $N; $j++)
         {
-            //echo " AS[" . $i . "," . $j . "]: " . $AS[$i][$j] . " ";
+            //if($AS[$i][$j] == "sinx") $AS[$i][$j] = 
         }
-        //echo "<br>";
     }
 
     //Заполние матрицы A 
@@ -83,8 +82,14 @@ function calc_matrix($N, $AS)
         {
             for ($j = 0; $j < $N; $j++)
             {
-                $A[$i][$j] = $AS[$i][$j];//ExSolver.solve(ExParser.parse(ExParser.prepare(AS[i, j])), x[w]);
-                //Console.Write(" A[" + i + "," + j + "]: " + A[i, j] + "\t");
+            	if(is_numeric($AS[$i][$j])) $A[$i][$j] = $AS[$i][$j];
+            	else switch($AS[$i][$j]){
+					case "sinx": $A[$i][$j] = sin($x[$w]); break;
+					case "cosx": $A[$i][$j] = cos($x[$w]); break;
+					case "tgx": $A[$i][$j] = tan($x[$w]); break;
+					case "x": $A[$i][$j] = $x[$w]; break;
+					default: $A[$i][$j] = 0; break;
+				}
             }
         }
 
@@ -216,11 +221,13 @@ function calc_matrix($N, $AS)
 }
 
 $step = $_GET['step'];
-
+?>
+<div id="main">
+<h1>Monodromy Matrix</h1>
+<?php
 if($step == 1 || $step == 0){
 	
 	?>
-	<div id="main">
 	<h2>Step 1:</h2>
 	<p>Select matrix size</p>
 	<form action="?" method="GET">
@@ -234,13 +241,12 @@ if($step == 1 || $step == 0){
 		</select>
 		<input type="submit" value="Next ->">
 	</form>
-	</div>
+	<p>You can use: <b>sinx</b>, <b>cosx</b>, <b>tgx</b>, <b>x</b>, constants <= 3.</p>
 	<?php
 	
 } else if($step == 2){
 	$size = $_GET['size'];
 	?>
-	<div id="main">
 	<h2>Step 2:</h2>
 	<p>Fill in with data</p>
 	<form action="?" method="GET">
@@ -268,7 +274,6 @@ if($step == 1 || $step == 0){
 	</form>
 	<hr>
 	<a href="?step=1"><input type="submit" value="<- Back"></a>
-	</div>
 	<?php
 	
 } else if($step == 3){
@@ -276,7 +281,6 @@ if($step == 1 || $step == 0){
 	$R = calc_matrix($size, $_GET['matrix']);
 	
 	?>
-	<div id="main">
 	<h2>Step 3:</h2>
 	<p>Here are your results</p>
 	<table>
@@ -300,11 +304,10 @@ if($step == 1 || $step == 0){
 		<hr>
 		<a href="?step=2"><input type="submit" value="<- Back"></a>
 		<a href="?step=1"><input type="submit" value="Start again"></a>
-		</div>
 	<?php
 }
 ?>
-
+		</div>
 <style>
 	body{
 		background: #ddd;
